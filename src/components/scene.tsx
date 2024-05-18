@@ -1,17 +1,18 @@
 "use client";
 
-import { ExportButtonListener } from "@/components/export-button";
+import { ExportButtonListener } from "@/components/controls/export-button";
 import { OrbitControls } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import { Raytracer } from "@react-three/lgl";
 import { ACESFilmicToneMapping } from "three";
 
 export interface SceneProps {
+  outline?: boolean;
   children?: React.ReactNode;
 }
 
 export function Scene(props: SceneProps) {
-  const { children } = props;
+  const { children, outline } = props;
 
   return (
     <Canvas
@@ -20,7 +21,7 @@ export function Scene(props: SceneProps) {
       camera={{ position: [0, 0, 5], fov: 35 }}
     >
       <OrbitControls />
-      <ExportButtonListener />
+      <ExportButtonListener outline={outline} />
       <Raytracer
         toneMapping={ACESFilmicToneMapping}
         movingDownsampling={true}

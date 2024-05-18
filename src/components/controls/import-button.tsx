@@ -51,7 +51,7 @@ export default function UploadButton(props: UploadButtonProps) {
         className="flex h-full items-center gap-2 bg-neutral-800 p-2 px-4 py-2 text-white transition-colors hover:bg-neutral-950"
       >
         <UploadIcon className="h-4 w-4" />
-        Upload
+        Import
       </button>
     </>
   );

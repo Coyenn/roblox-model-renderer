@@ -22,10 +22,11 @@ export default function ModelLoader(props: ModelLoaderProps) {
   const xSize = sizingBox.max.x - sizingBox.min.x;
   const ySize = sizingBox.max.y - sizingBox.min.y;
   const zSize = sizingBox.max.z - sizingBox.min.z;
-  const scaleFactor = 3 / Math.max(xSize, ySize, zSize);
+  const scaleFactor = 2 / Math.min(xSize, ySize, zSize);
 
   object.scale.set(scaleFactor, scaleFactor, scaleFactor);
-  object.rotateY(-Math.PI);
+  object.rotateY(-Math.PI - 0.3);
+  object.rotateX(0.3);
 
-  return <primitive object={object} />;
+  return <primitive object={object} position={[0, -0.25, 0]} />;
 }

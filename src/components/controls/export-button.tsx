@@ -6,7 +6,12 @@ import { useEffect } from "react";
 import ImageJS from "image-js";
 import { outlineImage } from "@/utilities/outline";
 
-export function ExportButtonListener() {
+export interface ExportButtonProps {
+  outline?: boolean;
+}
+
+export function ExportButtonListener(props: ExportButtonProps) {
+  const { outline } = props;
   const gl = useThree((state) => state.gl);
 
   function exportImage() {
@@ -20,13 +25,17 @@ export function ExportButtonListener() {
         y: 0,
       });
 
-      // Outline the image
-      const outlinedImage = outlineImage(croppedImage);
+      let exportImage;
 
-      // Create data URL and set download attributes
+      if (outline) {
+        exportImage = outlineImage(croppedImage);
+      } else {
+        exportImage = croppedImage.toDataURL();
+      }
+
       gl.setClearColor("#000000", 0);
       link.setAttribute("download", "export.png");
-      link.setAttribute("href", outlinedImage);
+      link.setAttribute("href", exportImage);
 
       link.click();
       link.remove();
@@ -50,10 +59,10 @@ export default function ExportButton() {
   return (
     <button
       id="export-button"
-      className="flex items-center gap-2 bg-neutral-800 p-2 px-4 py-2 text-white transition-colors hover:bg-neutral-950"
+      className="flex items-center gap-2 border border-neutral-800 bg-neutral-800 p-2 px-4 py-2 text-white transition-colors hover:border-neutral-950 hover:bg-neutral-950"
     >
       <DownloadIcon className="h-4 w-4" />
-      Export
+      Export as PNG
     </button>
   );
 }
