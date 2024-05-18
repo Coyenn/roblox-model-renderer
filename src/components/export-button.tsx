@@ -54,7 +54,7 @@ export default function ExportButton() {
   return (
     <button
       id="export-button"
-      className="absolute right-0 top-0 z-10 m-2 flex items-center gap-2 bg-neutral-800 p-2 px-4 py-2 text-white transition-colors hover:bg-neutral-950"
+      className="flex items-center gap-2 bg-neutral-800 p-2 px-4 py-2 text-white transition-colors hover:bg-neutral-950"
     >
       <DownloadIcon className="h-4 w-4" />
       Export
