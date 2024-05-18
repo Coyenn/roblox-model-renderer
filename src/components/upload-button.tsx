@@ -4,7 +4,7 @@ import UploadIcon from "@/components/icons/upload-icon";
 import { useRef } from "react";
 
 export interface UploadButtonProps {
-  onUpload: (files: FileList) => void;
+  onUpload: (objUrl: string, mtlUrl: string) => void;
 }
 
 export default function UploadButton(props: UploadButtonProps) {
@@ -20,7 +20,26 @@ export default function UploadButton(props: UploadButtonProps) {
         ref={inputRef}
         onChange={(e) => {
           if (e.target.files) {
-            onUpload(e.target.files);
+            const fileList = e.target.files;
+            let obj;
+            let mtl;
+
+            for (const file of fileList) {
+              if (file.name.endsWith(".obj")) {
+                obj = file;
+              } else if (file.name.endsWith(".mtl")) {
+                mtl = file;
+              }
+            }
+
+            if (!obj || !mtl) {
+              return;
+            }
+
+            const objUrl = URL.createObjectURL(obj);
+            const mtlUrl = URL.createObjectURL(mtl);
+
+            onUpload(objUrl, mtlUrl);
           }
         }}
         className="hidden"

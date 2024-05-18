@@ -17,33 +17,18 @@ export default function Home() {
       <RenderOverlay />
       <Toolbar>
         <UploadButton
-          onUpload={(fileList) => {
-            let obj;
-            let mtl;
-
-            for (const file of fileList) {
-              if (file.name.endsWith(".obj")) {
-                obj = file;
-              } else if (file.name.endsWith(".mtl")) {
-                mtl = file;
-              }
-            }
-
-            if (!obj || !mtl) {
-              return;
-            }
-
-            setObjFileUrl(window.URL.createObjectURL(obj));
-            setMtlFileUrl(window.URL.createObjectURL(mtl));
+          onUpload={(objUrl, mtlUrl) => {
+            setObjFileUrl(objUrl);
+            setMtlFileUrl(mtlUrl);
           }}
         />
         <ExportButton />
       </Toolbar>
-      <Scene>
-        {objFileUrl && mtlFileUrl && (
+      {objFileUrl && mtlFileUrl && (
+        <Scene>
           <ModelLoader objUrl={objFileUrl} mtlUrl={mtlFileUrl} />
-        )}
-      </Scene>
+        </Scene>
+      )}
     </main>
   );
 }

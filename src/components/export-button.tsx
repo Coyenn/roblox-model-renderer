@@ -9,41 +9,37 @@ import { outlineImage } from "@/utilities/outline";
 export function ExportButtonListener() {
   const gl = useThree((state) => state.gl);
 
-  async function exportImage() {
+  function exportImage() {
     const link = document.createElement("a");
-    const loadedImage = await ImageJS.load(gl.domElement.toDataURL());
+    void ImageJS.load(gl.domElement.toDataURL()).then((loadedImage) => {
+      // Crop to 1:1 aspect ratio
+      const croppedImage = loadedImage.crop({
+        width: gl.domElement.height,
+        height: gl.domElement.height,
+        x: gl.domElement.width / 2 - gl.domElement.height / 2,
+        y: 0,
+      });
 
-    // Crop to 1:1 aspect ratio
-    const croppedImage = loadedImage.crop({
-      width: gl.domElement.height,
-      height: gl.domElement.height,
-      x: gl.domElement.width / 2 - gl.domElement.height / 2,
-      y: 0,
+      // Outline the image
+      const outlinedImage = outlineImage(croppedImage);
+
+      // Create data URL and set download attributes
+      gl.setClearColor("#000000", 0);
+      link.setAttribute("download", "export.png");
+      link.setAttribute("href", outlinedImage);
+
+      link.click();
+      link.remove();
     });
-
-    // Outline the image
-    const outlinedImage = outlineImage(croppedImage);
-
-    // Create data URL and set download attributes
-    gl.setClearColor("#000000", 0);
-    link.setAttribute("download", "export.png");
-    link.setAttribute("href", outlinedImage);
-
-    link.click();
-    link.remove();
   }
 
   useEffect(() => {
     const exportButton = document.getElementById("export-button");
 
-    exportButton?.addEventListener("click", () => {
-      void exportImage();
-    });
+    exportButton?.addEventListener("click", exportImage);
 
     return () => {
-      exportButton?.removeEventListener("click", () => {
-        void exportImage();
-      });
+      exportButton?.removeEventListener("click", exportImage);
     };
   });
 

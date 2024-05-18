@@ -27,6 +27,5 @@ export default function ModelLoader(props: ModelLoaderProps) {
   object.scale.set(scaleFactor, scaleFactor, scaleFactor);
   object.rotateY(-Math.PI);
 
-  console.log(object);
   return <primitive object={object} />;
 }
