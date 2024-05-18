@@ -1,6 +1,7 @@
 "use client";
 
 import { useLoader } from "@react-three/fiber";
+import { useEffect } from "react";
 import { Box3 } from "three";
 import { MTLLoader, OBJLoader } from "three/examples/jsm/Addons.js";
 
@@ -18,15 +19,18 @@ export default function ModelLoader(props: ModelLoaderProps) {
     loader.setMaterials(materials);
   });
 
-  const sizingBox = new Box3().setFromObject(object);
-  const xSize = sizingBox.max.x - sizingBox.min.x;
-  const ySize = sizingBox.max.y - sizingBox.min.y;
-  const zSize = sizingBox.max.z - sizingBox.min.z;
-  const scaleFactor = 2 / Math.min(xSize, ySize, zSize);
+  useEffect(() => {
+    const sizingBox = new Box3().setFromObject(object);
+    const xSize = sizingBox.max.x - sizingBox.min.x;
+    const ySize = sizingBox.max.y - sizingBox.min.y;
+    const zSize = sizingBox.max.z - sizingBox.min.z;
+    const scaleFactor = 2 / Math.min(xSize, ySize, zSize);
 
-  object.scale.set(scaleFactor, scaleFactor, scaleFactor);
-  object.rotateY(-Math.PI - 0.3);
-  object.rotateX(0.3);
+    object.scale.set(scaleFactor, scaleFactor, scaleFactor);
+    object.rotation.set(0, 0, 0);
+    object.rotateY(-Math.PI - 0.3);
+    object.rotateX(0.3);
+  }, [objUrl, mtlUrl]);
 
   return <primitive object={object} position={[0, -0.25, 0]} />;
 }

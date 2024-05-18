@@ -13,6 +13,7 @@ export default function Home() {
   const [objFileUrl, setObjFileUrl] = useState<string>();
   const [mtlFileUrl, setMtlFileUrl] = useState<string>();
   const [outline, setOutline] = useState<boolean>(true);
+  const [sceneEnabled, setSceneEnabled] = useState<boolean>(true);
 
   return (
     <main className="h-screen w-screen">
@@ -20,15 +21,24 @@ export default function Home() {
         <>
           <Toolbar>
             <OutlineButton
-              onClick={() => setOutline(!outline)}
+              onClick={() => {
+                setOutline(!outline);
+                setSceneEnabled(false);
+
+                setTimeout(() => {
+                  setSceneEnabled(true);
+                }, 10);
+              }}
               active={outline}
             />
             <ExportButton />
           </Toolbar>
           <RenderOverlay />
-          <Scene outline={outline}>
-            <ModelLoader objUrl={objFileUrl} mtlUrl={mtlFileUrl} />
-          </Scene>
+          {sceneEnabled && (
+            <Scene outline={outline}>
+              <ModelLoader objUrl={objFileUrl} mtlUrl={mtlFileUrl} />
+            </Scene>
+          )}
         </>
       ) : (
         <div className="absolute flex h-screen w-screen items-center justify-center">

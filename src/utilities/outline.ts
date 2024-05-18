@@ -78,5 +78,10 @@ export function outlineImage(image: ImageJS): string {
   // Add outline around non-transparent parts
   addOutlineToCanvas(ctx, canvas.width, canvas.height, 4, "black");
 
-  return canvas.toDataURL();
+  const dataURL = canvas.toDataURL();
+
+  // Clean up
+  canvas.remove();
+
+  return dataURL;
 }

@@ -19,6 +19,7 @@ export function Scene(props: SceneProps) {
       dpr={[1, 2]}
       gl={{ preserveDrawingBuffer: true }}
       camera={{ position: [0, 0, 5], fov: 35 }}
+      onCreated={(state) => state.gl.setClearColor("#000000", 0)}
     >
       <OrbitControls />
       <ExportButtonListener outline={outline} />
