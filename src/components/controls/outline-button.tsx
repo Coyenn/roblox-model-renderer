@@ -6,9 +6,9 @@ export interface OutlineButtonProps {
 export default function OutlineButton(props: OutlineButtonProps) {
   const { onClick, active } = props;
   const activeClassNames =
-    "bg-neutral-800 text-white hover:bg-neutral-950 border border-neutral-800 hover:border-neutral-950";
+    "bg-neutral-900 text-white hover:bg-neutral-950 border border-neutral-900 hover:border-neutral-950";
   const inactiveClassNames =
-    "bg-transparent border border-neutral-800 hover:bg-neutral-600 text-neutral-800 hover:text-white hover:border-neutral-700";
+    "bg-transparent border border-neutral-900 hover:bg-neutral-600 text-neutral-900 hover:text-white hover:border-neutral-700";
 
   return (
     <button

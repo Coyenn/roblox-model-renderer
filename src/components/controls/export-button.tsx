@@ -18,12 +18,17 @@ export function ExportButtonListener(props: ExportButtonProps) {
     const link = document.createElement("a");
     void ImageJS.load(gl.domElement.toDataURL()).then((loadedImage) => {
       // Crop to 1:1 aspect ratio
-      const croppedImage = loadedImage.crop({
-        width: gl.domElement.height,
-        height: gl.domElement.height,
-        x: gl.domElement.width / 2 - gl.domElement.height / 2,
-        y: 0,
-      });
+      const croppedImage = loadedImage
+        .crop({
+          width: gl.domElement.height,
+          height: gl.domElement.height,
+          x: gl.domElement.width / 2 - gl.domElement.height / 2,
+          y: 0,
+        })
+        .resize({
+          width: 512,
+          height: 512,
+        });
 
       let exportImage;
 
@@ -59,7 +64,7 @@ export default function ExportButton() {
   return (
     <button
       id="export-button"
-      className="flex items-center gap-2 border border-neutral-800 bg-neutral-800 p-2 px-4 py-2 text-white transition-colors hover:border-neutral-950 hover:bg-neutral-950"
+      className="flex items-center gap-2 border border-neutral-900 bg-neutral-900 p-2 px-4 py-2 text-white transition-colors hover:border-neutral-950 hover:bg-neutral-950"
     >
       <DownloadIcon className="h-4 w-4" />
       Export as PNG
