@@ -25,7 +25,7 @@ export function addOutlineToCanvas(
   height: number,
   outlineWidth: number,
   outlineColor: string,
-) {
+): [HTMLCanvasElement, CanvasRenderingContext2D] {
   const imageData = ctx.getImageData(0, 0, width, height);
   const data = imageData.data;
 
@@ -60,6 +60,8 @@ export function addOutlineToCanvas(
   // Combine original image and outline
   ctx.clearRect(0, 0, width, height);
   ctx.drawImage(outlineCanvas, 0, 0);
+
+  return [outlineCanvas, ctx];
 }
 
 export function outlineImage(image: ImageJS, outlineWidth = 4): string {
@@ -76,12 +78,21 @@ export function outlineImage(image: ImageJS, outlineWidth = 4): string {
   ctx.putImageData(imageData, 0, 0);
 
   // Add outline around non-transparent parts
-  addOutlineToCanvas(ctx, canvas.width, canvas.height, 4, "black");
+  const [outlineCanvas, outlineCanvasContext] = addOutlineToCanvas(
+    ctx,
+    canvas.width,
+    canvas.height,
+    4,
+    "black",
+  );
 
   const dataURL = canvas.toDataURL();
 
   // Clean up
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  outlineCanvasContext.clearRect(0, 0, canvas.width, canvas.height);
   canvas.remove();
+  outlineCanvas.remove();
 
   return dataURL;
 }

@@ -1,19 +1,23 @@
 "use client";
 
 import UploadIcon from "@/components/icons/upload-icon";
-import useSettingsStore from "@/stores/useSettingsStore";
+import useApplicationStateStore from "@/stores/useApplicationStateStore";
 import { useRef } from "react";
 
 export default function UploadButton() {
-  const settings = useSettingsStore((state) => state.settings);
-  const setSettings = useSettingsStore((state) => state.setSettings);
+  const applicationState = useApplicationStateStore(
+    (state) => state.applicationState,
+  );
+  const setApplicationState = useApplicationStateStore(
+    (state) => state.setApplicationState,
+  );
   const inputRef = useRef<HTMLInputElement>(null);
 
   function onUpload(objUrl: string, mtlUrl: string) {
-    setSettings({
-      ...settings,
+    setApplicationState({
+      ...applicationState,
       model: {
-        ...settings.model,
+        ...applicationState.model,
         paths: [
           {
             path: objUrl,
@@ -26,7 +30,7 @@ export default function UploadButton() {
         ],
       },
       scene: {
-        ...settings.scene,
+        ...applicationState.scene,
         enabled: true,
       },
     });

@@ -6,26 +6,33 @@ import ExportButton from "@/components/controls/export-button";
 import RenderOverlay from "@/components/render-overlay";
 import Toolbar from "@/components/controls/toolbar";
 import ImportButton from "@/components/controls/import-button";
-import OutlineButton from "@/components/controls/outline-button";
-import useSettingsStore from "@/stores/useSettingsStore";
 import GitHubIcon from "@/components/icons/github-icon";
 import Link from "next/link";
 import RobloxIcon from "@/components/icons/roblox-icon";
 import XIcon from "@/components/icons/x-icon";
+import SettingsDialog from "@/components/dialogs/settings-dialog";
+import useApplicationStateStore from "@/stores/useApplicationStateStore";
+import QualitySelect from "@/components/quality-select";
 
 export default function Home() {
-  const settings = useSettingsStore((state) => state.settings);
+  const applicationState = useApplicationStateStore(
+    (state) => state.applicationState,
+  );
 
   return (
     <main className="h-screen w-screen">
-      {settings.model.paths && settings.model.paths?.length > 0 ? (
+      {applicationState.model.paths &&
+      applicationState.model.paths?.length > 0 ? (
         <>
           <Toolbar>
-            <OutlineButton />
+            <SettingsDialog />
             <ExportButton />
           </Toolbar>
           <RenderOverlay />
-          {settings.scene.enabled && (
+          <div className="absolute bottom-0 left-0 z-20 m-2">
+            <QualitySelect />
+          </div>
+          {applicationState.scene.enabled && (
             <Scene>
               <ModelLoader />
             </Scene>
@@ -44,7 +51,7 @@ export default function Home() {
                 target="_blank"
                 className="hover:text-neutral-900"
               >
-                <GitHubIcon className="h-8 w-8" />
+                <GitHubIcon className="h-6 w-6" />
                 <span className="sr-only">View on GitHub</span>
               </Link>
               <Link
@@ -52,7 +59,7 @@ export default function Home() {
                 target="_blank"
                 className="hover:text-neutral-900"
               >
-                <RobloxIcon className="h-8 w-8" />
+                <RobloxIcon className="h-6 w-6" />
                 <span className="sr-only">Follow me on Roblox</span>
               </Link>
               <Link
@@ -60,7 +67,7 @@ export default function Home() {
                 target="_blank"
                 className="hover:text-neutral-900"
               >
-                <XIcon className="h-8 w-8" />
+                <XIcon className="h-6 w-6" />
                 <span className="sr-only">Follow me on X/Twitter</span>
               </Link>
             </div>

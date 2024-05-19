@@ -6,10 +6,11 @@ import { useEffect } from "react";
 import ImageJS from "image-js";
 import { outlineImage } from "@/utilities/outline";
 import useSettingsStore from "@/stores/useSettingsStore";
+import { Button } from "@/components/ui/button";
 
 export function ExportButtonListener() {
-  const settings = useSettingsStore((state) => state.settings);
   const gl = useThree((state) => state.gl);
+  const settings = useSettingsStore((state) => state.settings);
 
   function exportImage() {
     const link = document.createElement("a");
@@ -27,23 +28,27 @@ export function ExportButtonListener() {
           height: settings.export.height,
         });
 
-      let exportImage;
+      let imageToExport;
 
       if (settings.export.outline.enabled) {
-        exportImage = outlineImage(croppedImage, settings.export.outline.width);
+        imageToExport = outlineImage(
+          croppedImage,
+          settings.export.outline.width,
+        );
       } else {
-        exportImage = croppedImage.toDataURL();
+        imageToExport = croppedImage.toDataURL();
       }
 
       gl.setClearColor(
         settings.export.backgroundColor,
         settings.export.transparency ? 0 : 1,
       );
+
       link.setAttribute(
         "download",
         `${settings.export.fileName}.${settings.export.format}`,
       );
-      link.setAttribute("href", exportImage);
+      link.setAttribute("href", imageToExport);
 
       link.click();
       link.remove();
@@ -64,15 +69,10 @@ export function ExportButtonListener() {
 }
 
 export default function ExportButton() {
-  const settings = useSettingsStore((state) => state.settings);
-
   return (
-    <button
-      id="export-button"
-      className="flex items-center gap-2 border border-neutral-900 bg-neutral-900 p-2 px-4 py-2 text-white transition-colors hover:border-neutral-950 hover:bg-neutral-950"
-    >
+    <Button id="export-button" className="gap-2">
       <DownloadIcon className="h-4 w-4" />
-      Export as {settings.export.format.toUpperCase()}
-    </button>
+      Export
+    </Button>
   );
 }
