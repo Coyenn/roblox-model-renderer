@@ -1,6 +1,6 @@
-export type DownloadIconProps = React.SVGProps<SVGSVGElement>;
+export type UploadIconProps = React.SVGProps<SVGSVGElement>;
 
-export default function DownloadIcon(props: DownloadIconProps) {
+export default function UploadIcon(props: UploadIconProps) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"

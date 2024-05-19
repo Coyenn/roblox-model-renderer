@@ -1,6 +1,7 @@
 "use client";
 
 import { ExportButtonListener } from "@/components/controls/export-button";
+import useSettingsStore from "@/stores/useSettingsStore";
 import { OrbitControls } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import { Raytracer } from "@react-three/lgl";
@@ -11,6 +12,8 @@ export interface SceneProps {
 }
 
 export function Scene(props: SceneProps) {
+  const settings = useSettingsStore((state) => state.settings);
+  const setSettings = useSettingsStore((state) => state.setSettings);
   const { children } = props;
 
   return (
@@ -20,7 +23,18 @@ export function Scene(props: SceneProps) {
       camera={{ position: [0, 0, 5], fov: 35 }}
       onCreated={(state) => state.gl.setClearColor("#000000", 0)}
     >
-      <OrbitControls />
+      <OrbitControls
+        onChange={(e) => {
+          setSettings({
+            ...settings,
+            metadata: {
+              ...settings.metadata,
+              position: e?.target.object.position,
+              rotation: e?.target.object.rotation,
+            },
+          });
+        }}
+      />
       <ExportButtonListener />
       <Raytracer
         toneMapping={ACESFilmicToneMapping}

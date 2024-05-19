@@ -1,4 +1,10 @@
+import { Euler, Vector3 } from "three";
+
 export interface Settings {
+  metadata: {
+    position?: Vector3;
+    rotation?: Euler;
+  };
   scene: {
     enabled: boolean;
   };
@@ -24,14 +30,18 @@ export interface Settings {
 }
 
 export const defaultSettings: Settings = {
+  metadata: {
+    position: new Vector3(),
+    rotation: new Euler(),
+  },
   scene: {
     enabled: false,
   },
   model: {},
   export: {
-    width: 1920,
-    height: 1080,
-    fileName: "output",
+    width: 512,
+    height: 512,
+    fileName: "render",
     format: "png",
     transparency: true,
     backgroundColor: "#ffffff",
