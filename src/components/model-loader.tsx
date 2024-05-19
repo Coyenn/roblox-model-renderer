@@ -1,17 +1,17 @@
 "use client";
 
+import useSettingsStore from "@/stores/useSettingsStore";
 import { useLoader } from "@react-three/fiber";
 import { useEffect } from "react";
 import { Box3 } from "three";
 import { MTLLoader, OBJLoader } from "three/examples/jsm/Addons.js";
 
-export interface ModelLoaderProps {
-  objUrl: string;
-  mtlUrl: string;
-}
-
-export default function ModelLoader(props: ModelLoaderProps) {
-  const { objUrl, mtlUrl } = props;
+export default function ModelLoader() {
+  const settings = useSettingsStore((state) => state.settings);
+  const objUrl =
+    settings.model.paths?.find((path) => path.type === "obj")?.path ?? "";
+  const mtlUrl =
+    settings.model.paths?.find((path) => path.type === "mtl")?.path ?? "";
 
   const materials = useLoader(MTLLoader, mtlUrl);
   const object = useLoader(OBJLoader, objUrl, (loader) => {

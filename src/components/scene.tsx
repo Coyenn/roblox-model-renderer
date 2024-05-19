@@ -7,12 +7,11 @@ import { Raytracer } from "@react-three/lgl";
 import { ACESFilmicToneMapping } from "three";
 
 export interface SceneProps {
-  outline?: boolean;
   children?: React.ReactNode;
 }
 
 export function Scene(props: SceneProps) {
-  const { children, outline } = props;
+  const { children } = props;
 
   return (
     <Canvas
@@ -22,7 +21,7 @@ export function Scene(props: SceneProps) {
       onCreated={(state) => state.gl.setClearColor("#000000", 0)}
     >
       <OrbitControls />
-      <ExportButtonListener outline={outline} />
+      <ExportButtonListener />
       <Raytracer
         toneMapping={ACESFilmicToneMapping}
         movingDownsampling={true}

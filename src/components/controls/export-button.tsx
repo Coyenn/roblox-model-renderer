@@ -5,13 +5,10 @@ import { useThree } from "@react-three/fiber";
 import { useEffect } from "react";
 import ImageJS from "image-js";
 import { outlineImage } from "@/utilities/outline";
+import useSettingsStore from "@/stores/useSettingsStore";
 
-export interface ExportButtonProps {
-  outline?: boolean;
-}
-
-export function ExportButtonListener(props: ExportButtonProps) {
-  const { outline } = props;
+export function ExportButtonListener() {
+  const settings = useSettingsStore((state) => state.settings);
   const gl = useThree((state) => state.gl);
 
   function exportImage() {
@@ -26,20 +23,26 @@ export function ExportButtonListener(props: ExportButtonProps) {
           y: 0,
         })
         .resize({
-          width: 512,
-          height: 512,
+          width: settings.export.width,
+          height: settings.export.height,
         });
 
       let exportImage;
 
-      if (outline) {
-        exportImage = outlineImage(croppedImage);
+      if (settings.export.outline.enabled) {
+        exportImage = outlineImage(croppedImage, settings.export.outline.width);
       } else {
         exportImage = croppedImage.toDataURL();
       }
 
-      gl.setClearColor("#000000", 0);
-      link.setAttribute("download", "export.png");
+      gl.setClearColor(
+        settings.export.backgroundColor,
+        settings.export.transparency ? 0 : 1,
+      );
+      link.setAttribute(
+        "download",
+        `${settings.export.fileName}.${settings.export.format}`,
+      );
       link.setAttribute("href", exportImage);
 
       link.click();
@@ -61,13 +64,15 @@ export function ExportButtonListener(props: ExportButtonProps) {
 }
 
 export default function ExportButton() {
+  const settings = useSettingsStore((state) => state.settings);
+
   return (
     <button
       id="export-button"
       className="flex items-center gap-2 border border-neutral-900 bg-neutral-900 p-2 px-4 py-2 text-white transition-colors hover:border-neutral-950 hover:bg-neutral-950"
     >
       <DownloadIcon className="h-4 w-4" />
-      Export as PNG
+      Export as {settings.export.format.toUpperCase()}
     </button>
   );
 }

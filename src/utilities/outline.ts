@@ -62,7 +62,7 @@ export function addOutlineToCanvas(
   ctx.drawImage(outlineCanvas, 0, 0);
 }
 
-export function outlineImage(image: ImageJS): string {
+export function outlineImage(image: ImageJS, outlineWidth = 4): string {
   // Convert the cropped ImageJS image to a canvas image
   const canvas = document.createElement("canvas");
   const ctx = canvas.getContext("2d")!;

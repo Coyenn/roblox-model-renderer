@@ -1,10 +1,15 @@
+"use client";
+
+import useSettingsStore from "@/stores/useSettingsStore";
+
 export interface OutlineButtonProps {
-  onClick: () => void;
-  active?: boolean;
+  onClick?: () => void;
 }
 
 export default function OutlineButton(props: OutlineButtonProps) {
-  const { onClick, active } = props;
+  const { onClick } = props;
+  const settings = useSettingsStore((state) => state.settings);
+  const setSettings = useSettingsStore((state) => state.setSettings);
   const activeClassNames =
     "bg-neutral-900 text-white hover:bg-neutral-950 border border-neutral-900 hover:border-neutral-950";
   const inactiveClassNames =
@@ -13,9 +18,22 @@ export default function OutlineButton(props: OutlineButtonProps) {
   return (
     <button
       className={`flex items-center gap-2 p-2 px-4 py-2 transition-colors ${
-        active ? activeClassNames : inactiveClassNames
+        settings.export.outline.enabled ? activeClassNames : inactiveClassNames
       }`}
-      onClick={onClick}
+      onClick={() => {
+        setSettings({
+          ...settings,
+          export: {
+            ...settings.export,
+            outline: {
+              ...settings.export.outline,
+              enabled: !settings.export.outline.enabled,
+            },
+          },
+        });
+
+        onClick?.();
+      }}
     >
       Outline
     </button>

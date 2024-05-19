@@ -1,15 +1,36 @@
 "use client";
 
 import UploadIcon from "@/components/icons/upload-icon";
+import useSettingsStore from "@/stores/useSettingsStore";
 import { useRef } from "react";
 
-export interface UploadButtonProps {
-  onUpload: (objUrl: string, mtlUrl: string) => void;
-}
-
-export default function UploadButton(props: UploadButtonProps) {
-  const { onUpload } = props;
+export default function UploadButton() {
+  const settings = useSettingsStore((state) => state.settings);
+  const setSettings = useSettingsStore((state) => state.setSettings);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  function onUpload(objUrl: string, mtlUrl: string) {
+    setSettings({
+      ...settings,
+      model: {
+        ...settings.model,
+        paths: [
+          {
+            path: objUrl,
+            type: "obj",
+          },
+          {
+            path: mtlUrl,
+            type: "mtl",
+          },
+        ],
+      },
+      scene: {
+        ...settings.scene,
+        enabled: true,
+      },
+    });
+  }
 
   return (
     <>
