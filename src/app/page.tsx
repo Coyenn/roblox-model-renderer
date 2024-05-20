@@ -13,6 +13,7 @@ import XIcon from "@/components/icons/x-icon";
 import SettingsDialog from "@/components/dialogs/settings-dialog";
 import useApplicationStateStore from "@/stores/useApplicationStateStore";
 import QualitySelect from "@/components/quality-select";
+import { CameraPresetCarousel } from "@/components/controls/camera-preset-carousel";
 
 export default function Home() {
   const applicationState = useApplicationStateStore(
@@ -31,6 +32,9 @@ export default function Home() {
           <RenderOverlay />
           <div className="absolute bottom-0 left-0 z-20 m-2">
             <QualitySelect />
+          </div>
+          <div className="absolute bottom-0 left-0 right-0 z-20 m-2 mx-auto flex w-[400px] max-w-[70vw] justify-center">
+            <CameraPresetCarousel />
           </div>
           {applicationState.scene.enabled && (
             <Scene>

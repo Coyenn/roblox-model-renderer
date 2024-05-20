@@ -1,16 +1,20 @@
+import { cameraPresets } from "@/utilities/camera-presets";
 import { Euler, Vector3 } from "three";
 
 export interface ApplicationState {
   isExporting: boolean;
   metadata: {
-    position?: Vector3;
-    rotation?: Euler;
+    position: Vector3;
+    rotation: Euler;
   };
   scene: {
     enabled: boolean;
   };
   raytracer: {
     enabled: boolean;
+  };
+  camera: {
+    preset?: keyof typeof cameraPresets;
   };
   model: {
     paths?: {
@@ -26,14 +30,17 @@ export interface ApplicationState {
 export const defaultApplicationState: ApplicationState = {
   isExporting: false,
   metadata: {
-    position: new Vector3(),
-    rotation: new Euler(),
+    position: cameraPresets.default!.position,
+    rotation: cameraPresets.default!.rotation,
   },
   raytracer: {
     enabled: false,
   },
   scene: {
     enabled: false,
+  },
+  camera: {
+    preset: "default",
   },
   model: {
     rotation: new Euler(0, -Math.PI, 0),

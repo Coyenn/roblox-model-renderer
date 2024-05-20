@@ -4,12 +4,11 @@ import { ExportButtonListener } from "@/components/controls/export-button";
 import useApplicationStateStore from "@/stores/useApplicationStateStore";
 import useSettingsStore from "@/stores/useSettingsStore";
 import { qualityPresets } from "@/utilities/settings";
-import { Environment, OrbitControls } from "@react-three/drei";
-import { EffectComposer, N8AO, SMAA } from "@react-three/postprocessing";
+import { OrbitControls } from "@react-three/drei";
 import { Canvas, useThree } from "@react-three/fiber";
 import { Raytracer } from "@react-three/lgl";
 import { useEffect } from "react";
-import { ACESFilmicToneMapping } from "three";
+import { ACESFilmicToneMapping, Euler } from "three";
 
 export interface SceneProps {
   children?: React.ReactNode;
@@ -47,8 +46,11 @@ export function Scene(props: SceneProps) {
     <Canvas
       dpr={[1, 2]}
       gl={{ preserveDrawingBuffer: true }}
-      camera={{ position: [0, 0, 5], fov: 35 }}
       shadows
+      camera={{
+        position: applicationState.metadata.position,
+        rotation: applicationState.metadata.rotation,
+      }}
     >
       <SceneSetup />
       <OrbitControls
@@ -58,61 +60,36 @@ export function Scene(props: SceneProps) {
             ...applicationState,
             metadata: {
               ...applicationState.metadata,
-              position: e?.target.object.position,
-              rotation: e?.target.object.rotation,
+              position:
+                e?.target.object.position ?? applicationState.metadata.position,
+              rotation:
+                e?.target.object.rotation ?? applicationState.metadata.rotation,
             },
           });
         }}
+        enableDamping={false}
       />
       <ExportButtonListener />
-      {applicationState.raytracer.enabled ? (
-        <Raytracer
-          toneMapping={ACESFilmicToneMapping}
-          movingDownsampling={true}
-          useTileRender={false}
-          samples={qualityPresets[settings.renderer.quality].samples}
-          bounces={qualityPresets[settings.renderer.quality].bounces}
-          envMapIntensity={
-            qualityPresets[settings.renderer.quality].envMapIntensity
-          }
-          enableDenoise={
-            qualityPresets[settings.renderer.quality].enableDenoise
-          }
-        >
-          {children}
-          <rectAreaLight
-            args={["white", 3]}
-            width={5}
-            height={5}
-            position={[-3, 4, 1]}
-            visible={false}
-          />
-        </Raytracer>
-      ) : (
-        <>
-          <ambientLight intensity={1} />
-          <spotLight
-            intensity={0.5}
-            angle={0.1}
-            penumbra={1}
-            position={[10, 15, 10]}
-            castShadow
-          />
-          <Environment preset="city" />
-          <EffectComposer enableNormalPass={false} multisampling={0}>
-            <N8AO
-              halfRes
-              color="black"
-              aoRadius={2}
-              intensity={1}
-              aoSamples={6}
-              denoiseSamples={4}
-            />
-            <SMAA />
-          </EffectComposer>
-          {children}
-        </>
-      )}
+      <Raytracer
+        toneMapping={ACESFilmicToneMapping}
+        movingDownsampling={true}
+        useTileRender={false}
+        samples={qualityPresets[settings.renderer.quality].samples}
+        bounces={qualityPresets[settings.renderer.quality].bounces}
+        envMapIntensity={
+          qualityPresets[settings.renderer.quality].envMapIntensity
+        }
+        enableDenoise={qualityPresets[settings.renderer.quality].enableDenoise}
+      >
+        {children}
+        <rectAreaLight
+          args={["white", 3]}
+          width={5}
+          height={5}
+          position={[-3, 6, 1]}
+          visible={false}
+        />
+      </Raytracer>
     </Canvas>
   );
 }
