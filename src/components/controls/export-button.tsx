@@ -7,12 +7,25 @@ import ImageJS from "image-js";
 import { outlineImage } from "@/utilities/outline";
 import useSettingsStore from "@/stores/useSettingsStore";
 import { Button } from "@/components/ui/button";
+import useApplicationStateStore from "@/stores/useApplicationStateStore";
+import { Loader2 } from "lucide-react";
 
 export function ExportButtonListener() {
   const gl = useThree((state) => state.gl);
   const settings = useSettingsStore((state) => state.settings);
+  const applicationState = useApplicationStateStore(
+    (state) => state.applicationState,
+  );
+  const setApplicationState = useApplicationStateStore(
+    (state) => state.setApplicationState,
+  );
 
   function exportImage() {
+    setApplicationState({
+      ...applicationState,
+      isExporting: true,
+    });
+
     const link = document.createElement("a");
     void ImageJS.load(gl.domElement.toDataURL()).then((loadedImage) => {
       // Crop to 1:1 aspect ratio
@@ -53,6 +66,13 @@ export function ExportButtonListener() {
 
       link.click();
       link.remove();
+
+      setTimeout(() => {
+        setApplicationState({
+          ...applicationState,
+          isExporting: false,
+        });
+      }, 500);
     });
   }
 
@@ -70,10 +90,24 @@ export function ExportButtonListener() {
 }
 
 export default function ExportButton() {
+  const applicationState = useApplicationStateStore(
+    (state) => state.applicationState,
+  );
+
   return (
-    <Button id="export-button" className="gap-2">
-      <DownloadIcon className="h-4 w-4" />
-      Export
-    </Button>
+    <div className="bg-white">
+      <Button
+        id="export-button"
+        className="gap-2"
+        disabled={applicationState.isExporting}
+      >
+        {applicationState.isExporting ? (
+          <Loader2 className="h-4 w-4 animate-spin" />
+        ) : (
+          <DownloadIcon className="h-4 w-4" />
+        )}
+        Export
+      </Button>
+    </div>
   );
 }

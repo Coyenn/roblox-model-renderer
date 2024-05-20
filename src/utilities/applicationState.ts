@@ -1,6 +1,7 @@
 import { Euler, Vector3 } from "three";
 
 export interface ApplicationState {
+  isExporting: boolean;
   metadata: {
     position?: Vector3;
     rotation?: Euler;
@@ -20,6 +21,7 @@ export interface ApplicationState {
 }
 
 export const defaultApplicationState: ApplicationState = {
+  isExporting: false,
   metadata: {
     position: new Vector3(),
     rotation: new Euler(),
