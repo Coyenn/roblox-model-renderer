@@ -3,12 +3,15 @@
 import useApplicationStateStore from "@/stores/useApplicationStateStore";
 import { useLoader } from "@react-three/fiber";
 import { useEffect } from "react";
-import { Box3 } from "three";
+import { Box3, DoubleSide, Euler, MeshPhongMaterial, Vector3 } from "three";
 import { MTLLoader, OBJLoader } from "three/examples/jsm/Addons.js";
 
 export default function ModelLoader() {
   const applicationState = useApplicationStateStore(
     (state) => state.applicationState,
+  );
+  const setApplicationState = useApplicationStateStore(
+    (state) => state.setApplicationState,
   );
   const objUrl =
     applicationState.model.paths?.find((path) => path.type === "obj")?.path ??
@@ -19,6 +22,7 @@ export default function ModelLoader() {
 
   const materials = useLoader(MTLLoader, mtlUrl);
   const object = useLoader(OBJLoader, objUrl, (loader) => {
+    materials.side = DoubleSide;
     materials.preload();
     loader.setMaterials(materials);
   });
@@ -31,10 +35,22 @@ export default function ModelLoader() {
     const scaleFactor = 2 / Math.min(xSize, ySize, zSize);
 
     object.scale.set(scaleFactor, scaleFactor, scaleFactor);
-    object.rotation.set(0, 0, 0);
-    object.rotateY(-Math.PI - 0.3);
-    object.rotateX(0.3);
+    setApplicationState({
+      ...applicationState,
+      model: {
+        ...applicationState.model,
+        scale: new Vector3(scaleFactor, scaleFactor, scaleFactor),
+      },
+    });
   }, [objUrl, mtlUrl]);
 
-  return <primitive object={object} position={[0, -0.25, 0]} />;
+  return (
+    <primitive
+      object={object}
+      rotation={applicationState.model.rotation}
+      scale={applicationState.model.scale}
+      position={applicationState.model.position}
+      material={new MeshPhongMaterial()}
+    />
+  );
 }
