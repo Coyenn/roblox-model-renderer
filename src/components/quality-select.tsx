@@ -5,48 +5,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import useApplicationStateStore from "@/stores/useApplicationStateStore";
-
-export interface QualityPreset {
-  samples: number;
-  bounces: number;
-  envMapIntensity: number;
-  enableDenoise: boolean;
-}
+import useSettingsStore from "@/stores/useSettingsStore";
+import { qualityPresets } from "@/utilities/settings";
 
 export default function QualitySelect() {
-  const applicationState = useApplicationStateStore(
-    (state) => state.applicationState,
-  );
-  const setApplicationState = useApplicationStateStore(
-    (state) => state.setApplicationState,
-  );
-  const qualityPresets = {
-    low: {
-      samples: 32,
-      bounces: 2,
-      envMapIntensity: 1,
-      enableDenoise: true,
-    },
-    medium: {
-      samples: 128,
-      bounces: 5,
-      envMapIntensity: 1,
-      enableDenoise: true,
-    },
-    high: {
-      samples: 512,
-      bounces: 8,
-      envMapIntensity: 1,
-      enableDenoise: true,
-    },
-    ultra: {
-      samples: 2048,
-      bounces: 10,
-      envMapIntensity: 1,
-      enableDenoise: true,
-    },
-  };
+  const settings = useSettingsStore((state) => state.settings);
+  const setSettings = useSettingsStore((state) => state.setSettings);
 
   return (
     <Select
@@ -63,26 +27,29 @@ export default function QualitySelect() {
           return;
         }
 
-        setApplicationState({
-          ...applicationState,
-          raytracer: {
-            ...applicationState.raytracer,
-            samples: qualityPreset.samples,
-            bounces: qualityPreset.bounces,
-            envMapIntensity: qualityPreset.envMapIntensity,
-            enableDenoise: qualityPreset.enableDenoise,
+        setSettings({
+          ...settings,
+          renderer: {
+            ...settings.renderer,
+            quality: newValue as keyof typeof qualityPresets,
           },
         });
       }}
     >
       <SelectTrigger>
-        <SelectValue placeholder="Quality" />
+        <SelectValue
+          placeholder={`Quality: ${
+            settings.renderer.quality.charAt(0).toUpperCase() +
+            settings.renderer.quality.slice(1)
+          }`}
+        />
       </SelectTrigger>
       <SelectContent>
-        <SelectItem value="low">Quality: Low</SelectItem>
-        <SelectItem value="medium">Quality: Medium</SelectItem>
-        <SelectItem value="high">Quality: High</SelectItem>
-        <SelectItem value="ultra">Quality: Ultra</SelectItem>
+        {Object.keys(qualityPresets).map((key) => (
+          <SelectItem key={key} value={key}>
+            Quality: {key.charAt(0).toUpperCase() + key.slice(1)}
+          </SelectItem>
+        ))}
       </SelectContent>
     </Select>
   );

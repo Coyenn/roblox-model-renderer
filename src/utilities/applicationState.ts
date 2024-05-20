@@ -10,10 +10,6 @@ export interface ApplicationState {
   };
   raytracer: {
     enabled: boolean;
-    samples: number;
-    bounces: number;
-    envMapIntensity: number;
-    enableDenoise: boolean;
   };
   model: {
     paths?: {
@@ -30,11 +26,6 @@ export const defaultApplicationState: ApplicationState = {
   },
   raytracer: {
     enabled: false,
-    // medium
-    samples: 128,
-    bounces: 5,
-    envMapIntensity: 1,
-    enableDenoise: true,
   },
   scene: {
     enabled: false,

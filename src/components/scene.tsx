@@ -3,7 +3,8 @@
 import { ExportButtonListener } from "@/components/controls/export-button";
 import useApplicationStateStore from "@/stores/useApplicationStateStore";
 import useSettingsStore from "@/stores/useSettingsStore";
-import { OrbitControls } from "@react-three/drei";
+import { qualityPresets } from "@/utilities/settings";
+import { OrbitControls, TransformControls } from "@react-three/drei";
 import { Canvas, useThree } from "@react-three/fiber";
 import { Raytracer } from "@react-three/lgl";
 import { useEffect } from "react";
@@ -29,32 +30,31 @@ function SceneSetup() {
       settings.export.transparency ? 0 : 1,
     );
 
-    setApplicationState({
-      ...applicationState,
-      raytracer: {
-        ...applicationState.raytracer,
-        enabled: false,
-      },
-    });
-
-    setTimeout(() => {
+    // if the raytracer is enabled, we need to reload it so it can use the new settings
+    if (applicationState.scene.enabled) {
       setApplicationState({
         ...applicationState,
         raytracer: {
           ...applicationState.raytracer,
-          enabled: true,
+          enabled: false,
         },
       });
-    }, 1);
+
+      setTimeout(() => {
+        setApplicationState({
+          ...applicationState,
+          raytracer: {
+            ...applicationState.raytracer,
+            enabled: false,
+          },
+        });
+      }, 1);
+    }
   }
 
   useEffect(() => {
     applySettings();
   }, [settings]);
-
-  useEffect(() => {
-    applySettings();
-  }, []);
 
   return <></>;
 }
@@ -66,6 +66,7 @@ export function Scene(props: SceneProps) {
   const setApplicationState = useApplicationStateStore(
     (state) => state.setApplicationState,
   );
+  const settings = useSettingsStore((state) => state.settings);
   const { children } = props;
 
   return (
@@ -73,8 +74,10 @@ export function Scene(props: SceneProps) {
       dpr={[1, 2]}
       gl={{ preserveDrawingBuffer: true }}
       camera={{ position: [0, 0, 5], fov: 35 }}
+      shadows
     >
       <SceneSetup />
+      <TransformControls />
       <OrbitControls
         onChange={(e) => {
           setApplicationState({
@@ -88,26 +91,26 @@ export function Scene(props: SceneProps) {
         }}
       />
       <ExportButtonListener />
-      {applicationState.raytracer.enabled && (
-        <Raytracer
-          toneMapping={ACESFilmicToneMapping}
-          movingDownsampling={true}
-          useTileRender={false}
-          samples={applicationState.raytracer.samples}
-          bounces={applicationState.raytracer.bounces}
-          envMapIntensity={applicationState.raytracer.envMapIntensity}
-          enableDenoise={applicationState.raytracer.enableDenoise}
-        >
-          {children}
-          <rectAreaLight
-            args={["white", 3]}
-            width={5}
-            height={5}
-            position={[-3, 4, 1]}
-            visible={false}
-          />
-        </Raytracer>
-      )}
+      <Raytracer
+        toneMapping={ACESFilmicToneMapping}
+        movingDownsampling={true}
+        useTileRender={false}
+        samples={qualityPresets[settings.renderer.quality].samples}
+        bounces={qualityPresets[settings.renderer.quality].bounces}
+        envMapIntensity={
+          qualityPresets[settings.renderer.quality].envMapIntensity
+        }
+        enableDenoise={qualityPresets[settings.renderer.quality].enableDenoise}
+      >
+        {children}
+        <rectAreaLight
+          args={["white", 3]}
+          width={5}
+          height={5}
+          position={[-3, 4, 1]}
+          visible={false}
+        />
+      </Raytracer>
     </Canvas>
   );
 }
