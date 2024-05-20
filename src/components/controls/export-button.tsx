@@ -34,6 +34,7 @@ export function ExportButtonListener() {
         imageToExport = outlineImage(
           croppedImage,
           settings.export.outline.width,
+          settings.export.outline.color,
         );
       } else {
         imageToExport = croppedImage.toDataURL();

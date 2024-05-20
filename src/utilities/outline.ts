@@ -64,7 +64,11 @@ export function addOutlineToCanvas(
   return [outlineCanvas, ctx];
 }
 
-export function outlineImage(image: ImageJS, outlineWidth = 4): string {
+export function outlineImage(
+  image: ImageJS,
+  outlineWidth: number,
+  outlineColor: string,
+): string {
   // Convert the cropped ImageJS image to a canvas image
   const canvas = document.createElement("canvas");
   const ctx = canvas.getContext("2d")!;
@@ -82,8 +86,8 @@ export function outlineImage(image: ImageJS, outlineWidth = 4): string {
     ctx,
     canvas.width,
     canvas.height,
-    4,
-    "black",
+    outlineWidth,
+    outlineColor,
   );
 
   const dataURL = canvas.toDataURL();
