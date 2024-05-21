@@ -6,7 +6,6 @@
 
 [Live Website](https://roblox-model-renderer.vercel.app/) •
 [Overview](#overview) •
-[Getting Started](#getting-started)
 
 </div>
 
