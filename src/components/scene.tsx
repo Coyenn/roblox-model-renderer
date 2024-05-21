@@ -74,13 +74,14 @@ export function Scene(props: SceneProps) {
       <Raytracer
         toneMapping={ACESFilmicToneMapping}
         movingDownsampling={true}
-        useTileRender={false}
+        useTileRender={true}
         samples={qualityPresets[settings.renderer.quality].samples}
         bounces={qualityPresets[settings.renderer.quality].bounces}
         envMapIntensity={
           qualityPresets[settings.renderer.quality].envMapIntensity
         }
         enableDenoise={qualityPresets[settings.renderer.quality].enableDenoise}
+        renderWhenOffFocus={false}
       >
         {children}
         <rectAreaLight

@@ -48,7 +48,7 @@ export const defaultApplicationState: ApplicationState = {
     preset: "default",
   },
   model: {
-    rotation: new Euler(0, -Math.PI, 0),
+    rotation: new Euler(0, 0, 0),
     position: new Vector3(0, 0, 0),
   },
 };

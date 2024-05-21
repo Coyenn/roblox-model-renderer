@@ -27,9 +27,9 @@ export function CameraPresetCarousel() {
             <CarouselItem key={name} className="basis-1/3">
               <button className="block h-full w-full p-1">
                 <Card
-                  className={
+                  className={`h-full w-full ${
                     isActive ? "bg-white" : "bg-gray-100 hover:bg-gray-50"
-                  }
+                  }`}
                   onClick={() => {
                     setApplicationState({
                       ...applicationState,
@@ -58,7 +58,7 @@ export function CameraPresetCarousel() {
                     }, 1);
                   }}
                 >
-                  <CardContent className="flex aspect-square items-center justify-center p-3">
+                  <CardContent className="flex h-full items-center justify-center p-3">
                     <span className="text-md text-center">{name}</span>
                   </CardContent>
                 </Card>
