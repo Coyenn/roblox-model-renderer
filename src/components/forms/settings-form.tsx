@@ -281,7 +281,9 @@ export function SettingsForm(props: SettingsFormProps) {
                     onCheckedChange={field.onChange}
                   />
                 </FormControl>
-                <FormLabel className="!m-0">Outline</FormLabel>
+                <FormLabel className="!m-0">
+                  Outline (only visible in final export)
+                </FormLabel>
                 <FormMessage className="!m-0" />
               </FormItem>
             )}

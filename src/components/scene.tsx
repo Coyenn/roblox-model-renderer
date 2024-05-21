@@ -8,7 +8,7 @@ import { OrbitControls } from "@react-three/drei";
 import { Canvas, useThree } from "@react-three/fiber";
 import { Raytracer } from "@react-three/lgl";
 import { useEffect } from "react";
-import { ACESFilmicToneMapping, Euler } from "three";
+import { ACESFilmicToneMapping } from "three";
 
 export interface SceneProps {
   children?: React.ReactNode;
@@ -50,6 +50,7 @@ export function Scene(props: SceneProps) {
       camera={{
         position: applicationState.metadata.position,
         rotation: applicationState.metadata.rotation,
+        fov: 35,
       }}
     >
       <SceneSetup />
