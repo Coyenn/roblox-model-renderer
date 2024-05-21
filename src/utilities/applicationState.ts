@@ -1,5 +1,12 @@
 import { cameraPresets } from "@/utilities/camera-presets";
-import { Euler, Vector3 } from "three";
+import { Euler, type Object3D, Vector3 } from "three";
+
+export type ModelExtension = "obj" | "mtl" | "fbx" | "gltf" | "glb";
+
+export interface ModelPath {
+  path: string;
+  type: ModelExtension;
+}
 
 export interface ApplicationState {
   isExporting: boolean;
@@ -17,10 +24,8 @@ export interface ApplicationState {
     preset?: keyof typeof cameraPresets;
   };
   model: {
-    paths?: {
-      path: string;
-      type: "obj" | "mtl" | "fbx" | "gltf";
-    }[]; // Can be one or, in the case of obj, multiple (.obj, .mtl)
+    paths?: ModelPath[]; // Can be one or, in the case of obj, multiple (.obj, .mtl)
+    object?: Object3D;
     rotation?: Euler;
     position?: Vector3;
     scale?: Vector3;

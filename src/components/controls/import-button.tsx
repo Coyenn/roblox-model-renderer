@@ -2,6 +2,11 @@
 
 import UploadIcon from "@/components/icons/upload-icon";
 import useApplicationStateStore from "@/stores/useApplicationStateStore";
+import {
+  type ModelExtension,
+  type ModelPath,
+} from "@/utilities/applicationState";
+import loadModel from "@/utilities/load-model";
 import { useRef } from "react";
 
 export default function UploadButton() {
@@ -13,26 +18,28 @@ export default function UploadButton() {
   );
   const inputRef = useRef<HTMLInputElement>(null);
 
-  function onUpload(objUrl: string, mtlUrl: string) {
-    setApplicationState({
-      ...applicationState,
-      model: {
-        ...applicationState.model,
-        paths: [
-          {
-            path: objUrl,
-            type: "obj",
-          },
-          {
-            path: mtlUrl,
-            type: "mtl",
-          },
-        ],
-      },
-      scene: {
-        ...applicationState.scene,
-        enabled: true,
-      },
+  function onUpload(fileList: FileList) {
+    const fileArray = Array.from(fileList);
+    const paths: ModelPath[] = fileArray
+      .map((file) => ({
+        path: URL.createObjectURL(file),
+        type: file.name.split(".").pop() as ModelExtension,
+      }))
+      .filter((path) => path.type !== undefined);
+
+    void loadModel(paths)?.then((object) => {
+      setApplicationState({
+        ...applicationState,
+        model: {
+          ...applicationState.model,
+          object: object,
+          paths: paths,
+        },
+        scene: {
+          ...applicationState.scene,
+          enabled: true,
+        },
+      });
     });
   }
 
@@ -40,31 +47,14 @@ export default function UploadButton() {
     <>
       <input
         type="file"
-        accept=".obj,.mtl"
+        accept=".obj,.mtl,.fbx,.gltf,.glb"
         multiple
         ref={inputRef}
         onChange={(e) => {
           if (e.target.files) {
             const fileList = e.target.files;
-            let obj;
-            let mtl;
 
-            for (const file of fileList) {
-              if (file.name.endsWith(".obj")) {
-                obj = file;
-              } else if (file.name.endsWith(".mtl")) {
-                mtl = file;
-              }
-            }
-
-            if (!obj || !mtl) {
-              return;
-            }
-
-            const objUrl = URL.createObjectURL(obj);
-            const mtlUrl = URL.createObjectURL(mtl);
-
-            onUpload(objUrl, mtlUrl);
+            onUpload(fileList);
           }
         }}
         className="hidden"
